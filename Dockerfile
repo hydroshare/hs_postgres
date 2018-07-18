@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y \
     pgadmin3 \
     postgresql-contrib-9.4
 
-RUN echo "listen_addresses = '*'" >> /var/lib/postgresql/data/postgresql.conf
+COPY allow-all.sh /docker-entrypoint-initdb.d/
+
+#RUN echo "listen_addresses = '*'" >> /var/lib/postgresql/data/postgresql.conf
 
 # Cleanup
 RUN apt-get clean

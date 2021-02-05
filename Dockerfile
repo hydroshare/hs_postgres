@@ -1,20 +1,25 @@
-FROM postgres:9.4.7
-MAINTAINER Michael J. Stealey <stealey@renci.org>
+FROM postgres:13.1
+MAINTAINER Alva L. Couch <acouch@cuahsi.org>
 
 RUN apt-get update && apt-get install -y \
     sudo \
+    curl \
+    ca-certificates \
+    gnupg \
     wget
 
-RUN sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt trusty-pgdg main" >> /etc/apt/sources.list'
-RUN wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
-RUN apt-get update && apt-get install -y \
-    postgresql-9.4-postgis-2.1 \
-    pgadmin3 \
-    postgresql-contrib-9.4
+RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+RUN sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+RUN apt-get update 
+# && 
+#    apt-get install -y \
+#       postgis \
+#       postgresql-13-postgis-2.4 \
+#       postgresql-13-postgis-scripts
 
 COPY allow-all.sh /docker-entrypoint-initdb.d/
-
-#RUN echo "listen_addresses = '*'" >> /var/lib/postgresql/data/postgresql.conf
 
 # Cleanup
 RUN apt-get clean
